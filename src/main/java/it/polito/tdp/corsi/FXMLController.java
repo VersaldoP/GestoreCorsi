@@ -64,10 +64,10 @@ public class FXMLController {
     	catch(NumberFormatException e ){
     		txtRisultato.setText("Devi inserire un numero(1 0 2) per il periodo didattico");
     		return;    	}
-    	catch(NullPointerException npe) {
-    		txtRisultato.setText("Devi inserire un numero(1 0 2) per il periodo didattico");
-    		return;
-    		}
+//    	catch(NullPointerException npe) {
+//    		txtRisultato.setText("Devi inserire un numero(1 0 2) per il periodo didattico");
+//    		return;
+//    		}
     	if (periodo<1||periodo>2) {
     		txtRisultato.setText("Devi inserire un numero(1 0 2) per il periodo didattico");
     		return;
