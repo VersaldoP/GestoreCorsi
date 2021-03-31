@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 
 import it.polito.tdp.corsi.model.Corso;
 import it.polito.tdp.corsi.model.Model;
+import it.polito.tdp.corsi.model.Studente;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -74,9 +75,32 @@ public class FXMLController {
     		}		
     	//ELABORAZIONE
     	List<Corso> corsi = this.model.getCorsiByPeriodo(periodo);
-    	for(Corso c:corsi) {
-    		txtRisultato.appendText(c.toString()+"/n");
+//    	for(Corso c:corsi) {
+//    		txtRisultato.appendText(c.toString()+"/n");
+//    	}
+//		Dobbiamo anche modificare il tipo di parametri che la textArea può accettare
+//    	txtRisultato.setFromat....
+    	
+    	StringBuilder sb= new StringBuilder();
+    	for(Corso c: corsi) {
+    		sb.append(String.format("%-8s ",c.getCodins()));
+    		sb.append(String.format("%-4d ",c.getCrediti()));
+    		sb.append(String.format("%-50s ",c.getNome()));
+    		sb.append(String.format("%-4d\n",c.getPd()));
+//    		 "%" è il place holder,
+//    		"-"(allineato a sinistra se no sarebbe allineato a dx),
+//    		"n" numero di caratteri(8) 
+//    		"s"o "d" tipo(s stringa; d intero)
+//    		 lo possiamo fare anche in unica riga
+    		
+    		//dopo il %, il "-" serve per allineare il testo a sinistra, 
+    		//il numero per definire la "larghezza" della colonna
+
+    		//N.B. lo stesso formato si può ottenere andando a modificare direttamente
+    		//il metodo toString della classe (vedi quanto fatto per la classe Studente)
+    		
     	}
+    	txtRisultato.appendText(sb.toString());
     }
 
     @FXML
@@ -102,24 +126,60 @@ public class FXMLController {
     		return;
     		}		
     	//ELABORAZIONE
-    	Map<Corso,Integer> corsiIscrizioni = this.model.getIscrittiByPeriodo(periodo);
-    	for(Corso c:corsiIscrizioni.keySet()) {
-    		
-    		txtRisultato.appendText(c.toString());
-    		Integer n = corsiIscrizioni.get(c);
-    		txtRisultato.appendText("\t"+n+"\n");
-    	}
     	
+    	Map<Corso,Integer> corsiIscrizioni = this.model.getIscrittiByPeriodo(periodo);
+    	
+    	StringBuilder sb = new StringBuilder();
+    	
+    	
+    	for(Corso c:corsiIscrizioni.keySet()) 
+    		    		sb.append(String.format("%-50s %4d\n", c.getNome(),corsiIscrizioni.get(c)));
+    	
+    	txtRisultato.appendText(sb.toString());
     }
 
-    @FXML
-    void stampaDivisione(ActionEvent event) {
-
-    }
+  
 
     @FXML
     void stampaStudenti(ActionEvent event) {
+    	txtRisultato.clear();
+    	
+    	String codice = txtCorso.getText();
+    	
+    	if(!model.esisteCorso(codice)) {
+    		
+    		txtRisultato.appendText("il corso non esiste ");
+    		return;
+    	}
+    	
+    	List<Studente> studenti = model.getStudentiByCorso(codice);
+    	if (studenti.size()==0) {
+    		txtRisultato.appendText("il corso non ha iscritti ");
+    		return;
+    	}
+    	
+    	for (Studente s:studenti) {
+    		txtRisultato.appendText(s.toString()+"\n");
+    	}
 
+    }
+    @FXML
+    void stampaDivisione(ActionEvent event) {
+    	
+    	txtRisultato.clear();
+    	
+    	String codice = txtCorso.getText();
+    	
+    	if(!model.esisteCorso(codice)) {
+    		txtRisultato.appendText("il corso non esiste");
+    		return;
+    	}
+    	
+    	Map<String,Integer> divisione=model.getDivisioneCDS(codice);
+    	
+    	for(String cds : divisione.keySet())
+    			txtRisultato.appendText(String.format("%-8s %4d\n",cds,divisione.get(cds)));
+    	
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
