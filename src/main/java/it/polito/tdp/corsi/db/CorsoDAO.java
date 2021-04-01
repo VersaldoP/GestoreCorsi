@@ -47,7 +47,7 @@ public class CorsoDAO {
 		
 		String sql ="SELECT c.codins,c.nome,c.crediti,c.pd,COUNT(*) AS tot"
 				+" FROM corso c,iscrizione i"
-				+" WHERE c.codins=i.codins AND c.pd=1"
+				+" WHERE c.codins=i.codins AND c.pd=?"
 				+" GROUP BY c.codins,c.nome,c.crediti,c.pd";
 		Map<Corso,Integer> result = new HashMap<Corso,Integer>();
 		
@@ -78,10 +78,10 @@ public class CorsoDAO {
 	
 	public List<Studente> getStudenteByCorso(Corso corso){
 		
-		String sql = "SELECT s.matricola,s.cognome,s.nome,s.CDS"
-				+" FROM studente s,iscrizione i"
-				+" WHERE s.matricola=i.matricola"
-				+" AND i.codins='02CIXPG'";
+		String sql = "SELECT s.matricola, s.cognome, s.nome, s.CDS "
+				+ "FROM studente s, iscrizione i "
+				+ "WHERE s.matricola = i.matricola "
+				+ "AND i.codins = ?";
 		List<Studente>result = new LinkedList<Studente>();
 
 		try {
@@ -143,7 +143,7 @@ public class CorsoDAO {
 	// FARE ATTENZIONE BISOGNA CHIUDERE LE CONNESSIONI PER OGI VOLTA CHE HO UN RETURN
 	
 	public boolean esisteCorso(Corso corso) {
-		String sql="SELECT* FORM corso WHERE codins = ?";
+		String sql = "SELECT * FROM corso WHERE codins = ?";
 				try  {
 					Connection conn = DBConnect.getConnection();
 					PreparedStatement st= conn.prepareStatement(sql);
@@ -161,6 +161,7 @@ public class CorsoDAO {
 						conn.close();
 						return false;
 					}
+
 				}
 		catch(SQLException e) {
 			throw new RuntimeException(e);
